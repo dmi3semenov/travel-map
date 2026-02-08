@@ -1,0 +1,258 @@
+/* City search */
+#search-container {
+  padding: 10px 16px 0;
+  position: relative;
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0 10px;
+  transition: border-color 0.15s;
+}
+
+.search-input-wrapper:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.search-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+#city-search {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 9px 8px;
+  font-size: 13px;
+  color: var(--color-text);
+  outline: none;
+}
+
+#city-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+#search-clear {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 13px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+#search-clear:hover {
+  background: var(--color-border);
+  color: var(--color-text);
+}
+
+#search-results {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  margin-top: 4px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+#search-results:empty {
+  display: none;
+}
+
+.search-result-item {
+  padding: 9px 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.1s;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background: #f0f4ff;
+}
+
+.search-result-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.search-result-country {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.search-loading,
+.search-empty {
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* Waypoint item */
+.waypoint-item {
+  padding: 0 16px;
+}
+
+.waypoint-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.waypoint-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.waypoint-name-input {
+  flex: 1;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 14px;
+  color: var(--color-text);
+  background: transparent;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.waypoint-name-input:hover {
+  background: var(--color-bg);
+  border-color: var(--color-border);
+}
+
+.waypoint-name-input:focus {
+  background: white;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.waypoint-delete {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  opacity: 0;
+  transition: all 0.15s ease;
+}
+
+.waypoint-item:hover .waypoint-delete {
+  opacity: 1;
+}
+
+.waypoint-delete:hover {
+  background: #fef2f2;
+  color: var(--color-danger);
+}
+
+/* Segment transport selector */
+.segment-connector {
+  display: flex;
+  align-items: center;
+  padding: 0 16px 0 22px;
+  margin: 2px 0;
+}
+
+.segment-line {
+  width: 2px;
+  height: 8px;
+  background: var(--color-border);
+  margin: 0 13px;
+  flex-shrink: 0;
+}
+
+.transport-selector {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.transport-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 28px;
+  border: 1px solid var(--color-border);
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s ease;
+  title: attr(data-label);
+}
+
+.transport-btn:hover {
+  background: var(--color-bg);
+  transform: scale(1.1);
+}
+
+.transport-btn.active[data-transport="plane"] {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--color-plane);
+  color: var(--color-plane);
+}
+
+.transport-btn.active[data-transport="bus"] {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: var(--color-bus);
+}
+
+.transport-btn.active[data-transport="car"] {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: var(--color-car);
+}
+
+.transport-btn.active[data-transport="train"] {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: var(--color-train);
+}
+
+.transport-btn.active[data-transport="walking"] {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-walking);
+}
+
+.segment-label {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  margin-left: 6px;
+  white-space: nowrap;
+}

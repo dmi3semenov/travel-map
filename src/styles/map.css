@@ -1,0 +1,127 @@
+/* Custom waypoint markers */
+.wp-marker {
+  width: 32px;
+  height: 32px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  box-shadow: var(--shadow);
+  border: 2px solid white;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.wp-marker:hover {
+  transform: rotate(-45deg) scale(1.1);
+}
+
+.wp-marker-inner {
+  transform: rotate(45deg);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Transport animation marker */
+.transport-icon-wrapper {
+  background: none !important;
+  border: none !important;
+}
+
+.transport-marker {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 50%;
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--color-primary);
+}
+
+.transport-marker svg {
+  width: 26px;
+  height: 26px;
+}
+
+.transport-marker.transport-plane {
+  border-color: var(--color-plane);
+  color: var(--color-plane);
+}
+.transport-marker.transport-bus {
+  border-color: var(--color-bus);
+  color: var(--color-bus);
+}
+.transport-marker.transport-car {
+  border-color: var(--color-car);
+  color: var(--color-car);
+}
+.transport-marker.transport-train {
+  border-color: var(--color-train);
+  color: var(--color-train);
+}
+.transport-marker.transport-walking {
+  border-color: var(--color-walking);
+  color: var(--color-walking);
+}
+
+/* Tile layer switcher */
+.tile-switcher {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px !important;
+  background: white !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.tile-btn {
+  padding: 5px 10px;
+  border: 1px solid var(--color-border);
+  background: white;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  transition: all 0.15s;
+  text-align: left;
+}
+
+.tile-btn:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.tile-btn.active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+/* Leaflet popup customization */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.leaflet-popup-content {
+  margin: 10px 14px !important;
+  font-size: 13px;
+}
+
+.wp-popup strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.wp-popup span {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Интерактивная карта путешествий</title>
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div id="sidebar-header">
+        <h1>🗺️ Карта путешествия</h1>
+        <p id="sidebar-hint">Кликните на карту, чтобы добавить точку маршрута</p>
+      </div>
+
+      <div id="waypoint-list"></div>
+
+      <div id="sidebar-empty" class="hidden">
+        <div class="empty-icon">📍</div>
+        <p>Маршрут пуст.<br>Кликните на карту, чтобы начать.</p>
+      </div>
+
+      <div id="sidebar-actions">
+        <button id="btn-add-point" class="btn btn-primary">
+          <span class="btn-icon">➕</span> Добавить точку
+        </button>
+        <button id="btn-clear" class="btn btn-danger">
+          <span class="btn-icon">🗑️</span> Очистить маршрут
+        </button>
+      </div>
+    </aside>
+
+    <main id="map-container">
+      <div id="map"></div>
+
+      <div id="animation-controls">
+        <div class="controls-group">
+          <button id="btn-play" class="ctrl-btn" title="Воспроизвести (Space)">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </button>
+          <button id="btn-pause" class="ctrl-btn hidden" title="Пауза (Space)">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          </button>
+          <button id="btn-reset" class="ctrl-btn" title="Сброс (R)">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="controls-divider"></div>
+
+        <div class="controls-group">
+          <span class="controls-label">Скорость</span>
+          <button id="btn-speed-settings" class="ctrl-btn" title="Настройки скорости">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="controls-divider"></div>
+
+        <div class="controls-progress">
+          <div id="progress-bar">
+            <div id="progress-fill"></div>
+          </div>
+          <span id="progress-label">0%</span>
+        </div>
+      </div>
+
+      <div id="speed-panel" class="hidden">
+        <div class="speed-panel-header">Скорость по типу транспорта</div>
+        <div class="speed-panel-row" data-transport="plane">
+          <span class="speed-panel-icon">✈</span>
+          <span class="speed-panel-label">Самолёт</span>
+          <div class="speed-panel-btns">
+            <button class="speed-btn" data-speed="0.5">0.5×</button>
+            <button class="speed-btn" data-speed="1">1×</button>
+            <button class="speed-btn" data-speed="2">2×</button>
+            <button class="speed-btn active" data-speed="4">4×</button>
+          </div>
+        </div>
+        <div class="speed-panel-row" data-transport="bus">
+          <span class="speed-panel-icon">🚌</span>
+          <span class="speed-panel-label">Автобус</span>
+          <div class="speed-panel-btns">
+            <button class="speed-btn active" data-speed="0.5">0.5×</button>
+            <button class="speed-btn" data-speed="1">1×</button>
+            <button class="speed-btn" data-speed="2">2×</button>
+            <button class="speed-btn" data-speed="4">4×</button>
+          </div>
+        </div>
+        <div class="speed-panel-row" data-transport="car">
+          <span class="speed-panel-icon">🚗</span>
+          <span class="speed-panel-label">Машина</span>
+          <div class="speed-panel-btns">
+            <button class="speed-btn active" data-speed="0.5">0.5×</button>
+            <button class="speed-btn" data-speed="1">1×</button>
+            <button class="speed-btn" data-speed="2">2×</button>
+            <button class="speed-btn" data-speed="4">4×</button>
+          </div>
+        </div>
+        <div class="speed-panel-row" data-transport="train">
+          <span class="speed-panel-icon">🚆</span>
+          <span class="speed-panel-label">Поезд</span>
+          <div class="speed-panel-btns">
+            <button class="speed-btn active" data-speed="0.5">0.5×</button>
+            <button class="speed-btn" data-speed="1">1×</button>
+            <button class="speed-btn" data-speed="2">2×</button>
+            <button class="speed-btn" data-speed="4">4×</button>
+          </div>
+        </div>
+        <div class="speed-panel-row" data-transport="walking">
+          <span class="speed-panel-icon">🚶</span>
+          <span class="speed-panel-label">Пешком</span>
+          <div class="speed-panel-btns">
+            <button class="speed-btn active" data-speed="0.5">0.5×</button>
+            <button class="speed-btn" data-speed="1">1×</button>
+            <button class="speed-btn" data-speed="2">2×</button>
+            <button class="speed-btn" data-speed="4">4×</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="adding-point-overlay" class="hidden">
+        <div class="overlay-message">📍 Кликните на карту для добавления точки</div>
+      </div>
+
+      <div id="toast" class="hidden"></div>
+    </main>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
