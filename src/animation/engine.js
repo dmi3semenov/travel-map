@@ -101,7 +101,7 @@ export class AnimationEngine {
 
     this.currentSegIdx = segIdx;
     this.segmentProgress = segProgress;
-    this._lastFittedSegIdx = segIdx; // suppress auto-zoom during seek
+    this._lastFittedSegIdx = -1; // reset so _fitToSegment updates camera
 
     if (!this.animMarker) {
       this._createMarker();
@@ -113,6 +113,7 @@ export class AnimationEngine {
       if (seg.pathPoints && seg.pathPoints.length >= 2) {
         this._updateMarkerPosition(seg);
       }
+      this._fitToSegment(segIdx);
     }
 
     if (store.getAnimationState() === 'idle') {
