@@ -85,6 +85,43 @@ export class AnimationEngine {
     store.setAnimationState('idle');
   }
 
+  seek(progress) {
+    const segments = store.getSegments();
+    const total = segments.length;
+    if (total === 0) return;
+
+    const p = Math.max(0, Math.min(1, progress));
+    let segIdx = Math.floor(p * total);
+    let segProgress = p * total - segIdx;
+
+    if (segIdx >= total) {
+      segIdx = total - 1;
+      segProgress = 1;
+    }
+
+    this.currentSegIdx = segIdx;
+    this.segmentProgress = segProgress;
+    this._lastFittedSegIdx = segIdx; // suppress auto-zoom during seek
+
+    if (!this.animMarker) {
+      this._createMarker();
+    }
+
+    const seg = segments[segIdx];
+    if (seg) {
+      this._setMarkerTransport(seg.transport);
+      if (seg.pathPoints && seg.pathPoints.length >= 2) {
+        this._updateMarkerPosition(seg);
+      }
+    }
+
+    if (store.getAnimationState() === 'idle') {
+      store.setAnimationState('paused');
+    }
+
+    this._updateProgress();
+  }
+
   _createMarker() {
     const segments = store.getSegments();
     if (segments.length === 0) return;
@@ -223,10 +260,13 @@ export class AnimationEngine {
     const total = segments.length;
     if (total === 0) return;
     const progress = (this.currentSegIdx + this.segmentProgress) / total;
+    const pct = Math.round(progress * 100);
     const fill = document.getElementById('progress-fill');
     const label = document.getElementById('progress-label');
-    if (fill) fill.style.width = `${Math.round(progress * 100)}%`;
-    if (label) label.textContent = `${Math.round(progress * 100)}%`;
+    const bar = document.getElementById('progress-bar');
+    if (fill) fill.style.width = `${pct}%`;
+    if (label) label.textContent = `${pct}%`;
+    if (bar) bar.style.setProperty('--thumb-x', `${pct}%`);
   }
 
   _finish() {

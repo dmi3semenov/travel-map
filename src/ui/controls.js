@@ -52,6 +52,38 @@ export function initControls(engine) {
     });
   });
 
+  // Progress bar scrubber
+  const progressBar = document.getElementById('progress-bar');
+  let scrubbing = false;
+
+  function seekFromPointer(e) {
+    if (store.getWaypoints().length < 2) return;
+    const rect = progressBar.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const progress = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    engine.seek(progress);
+  }
+
+  progressBar.addEventListener('mousedown', e => {
+    scrubbing = true;
+    if (store.getAnimationState() === 'playing') engine.pause();
+    seekFromPointer(e);
+  });
+  document.addEventListener('mousemove', e => {
+    if (scrubbing) seekFromPointer(e);
+  });
+  document.addEventListener('mouseup', () => { scrubbing = false; });
+
+  progressBar.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if (store.getAnimationState() === 'playing') engine.pause();
+    seekFromPointer(e);
+  }, { passive: false });
+  progressBar.addEventListener('touchmove', e => {
+    e.preventDefault();
+    seekFromPointer(e);
+  }, { passive: false });
+
   // Keyboard shortcuts
   document.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT') return;

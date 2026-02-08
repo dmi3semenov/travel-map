@@ -301,7 +301,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-width: 120px;
+  min-width: 140px;
 }
 
 #progress-bar {
@@ -309,7 +309,13 @@ html, body {
   height: 6px;
   background: var(--color-border);
   border-radius: 3px;
-  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: height 0.15s ease;
+}
+
+#progress-bar:hover {
+  height: 8px;
 }
 
 #progress-fill {
@@ -318,6 +324,27 @@ html, body {
   background: linear-gradient(90deg, var(--color-primary), #8b5cf6);
   border-radius: 3px;
   transition: width 0.1s linear;
+  pointer-events: none;
+}
+
+#progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: var(--thumb-x, 0%);
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: white;
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+#progress-bar:hover::after {
+  opacity: 1;
 }
 
 #progress-label {
