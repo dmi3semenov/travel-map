@@ -42,8 +42,8 @@ export function initMap() {
     });
   }
 
-  // Default: try Russian tiles
-  setTileLayer('ru');
+  // Default: English tiles (CartoDB Voyager)
+  setTileLayer('en');
 
   // Add tile switcher control
   const TileControl = L.Control.extend({
@@ -51,7 +51,7 @@ export function initMap() {
     onAdd() {
       const div = L.DomUtil.create('div', 'tile-switcher leaflet-bar');
       div.innerHTML = Object.entries(TILE_LAYERS)
-        .map(([key, cfg]) => `<button class="tile-btn${key === 'ru' ? ' active' : ''}" data-tile="${key}" title="${cfg.label}">${cfg.label}</button>`)
+        .map(([key, cfg]) => `<button class="tile-btn${key === 'en' ? ' active' : ''}" data-tile="${key}" title="${cfg.label}">${cfg.label}</button>`)
         .join('');
       L.DomEvent.disableClickPropagation(div);
       div.addEventListener('click', e => {

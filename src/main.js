@@ -13,6 +13,7 @@ import { buildRouteForSegment, removeRouteForSegment } from './map/routes.js';
 import { AnimationEngine } from './animation/engine.js';
 import { initSidebar } from './ui/sidebar.js';
 import { initControls } from './ui/controls.js';
+import { saveCurrentRoute, loadCurrentRoute } from './utils/storage.js';
 
 // Make arc library globally accessible for geo.js
 window._arcLib = Arc;
@@ -126,6 +127,22 @@ function resetAnimationIfNeeded() {
     engine.reset();
     showToast('Анимация сброшена');
   }
+}
+
+// --- Auto-save current route to localStorage ---
+function autoSave() {
+  saveCurrentRoute(store.getWaypoints(), store.getSegments());
+}
+store.subscribe('waypoint:added', autoSave);
+store.subscribe('waypoint:removed', autoSave);
+store.subscribe('waypoint:updated', autoSave);
+store.subscribe('segment:recalculate', autoSave);
+store.subscribe('cleared', autoSave);
+
+// Restore last session on load
+const saved = loadCurrentRoute();
+if (saved && saved.waypoints.length > 0) {
+  store.loadRoute(saved);
 }
 
 // Clear button

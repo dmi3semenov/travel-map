@@ -171,6 +171,24 @@ class Store {
     this.emit('animation:speedChange', { type, speed });
   }
 
+  loadRoute(data) {
+    // Clear existing
+    this._state.segments.forEach(s => this.emit('segment:removing', { segmentId: s.id }));
+    this._state.waypoints.forEach(w => this.emit('waypoint:removed', { waypointId: w.id }));
+    this._state.segments = [];
+    this._state.waypoints = [];
+
+    // Load new data
+    data.waypoints.forEach(wp => {
+      this._state.waypoints.push(wp);
+      this.emit('waypoint:added', { waypointId: wp.id });
+    });
+    data.segments.forEach(seg => {
+      this._state.segments.push({ ...seg, pathPoints: [], polyline: null });
+      this.emit('segment:added', { segmentId: seg.id });
+    });
+  }
+
   clearAll() {
     // Remove all segments first
     this._state.segments.forEach(s => this.emit('segment:removing', { segmentId: s.id }));

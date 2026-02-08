@@ -20,10 +20,20 @@
         <p>Маршрут пуст.<br>Кликните на карту, чтобы начать.</p>
       </div>
 
+      <div id="saved-routes-panel" class="hidden"></div>
+
       <div id="sidebar-actions">
         <button id="btn-add-point" class="btn btn-primary">
           <span class="btn-icon">➕</span> Добавить точку
         </button>
+        <div class="btn-row">
+          <button id="btn-save-route" class="btn btn-secondary" disabled>
+            <span class="btn-icon">⭐</span> Сохранить
+          </button>
+          <button id="btn-show-saved" class="btn btn-secondary">
+            <span class="btn-icon">📂</span> Маршруты
+          </button>
+        </div>
         <button id="btn-clear" class="btn btn-danger">
           <span class="btn-icon">🗑️</span> Очистить маршрут
         </button>

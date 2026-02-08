@@ -1,6 +1,7 @@
 import { store } from '../state/store.js';
 import { getTransportIcon, TRANSPORT_TYPES, TRANSPORT_LABELS } from '../animation/transport-icons.js';
 import { searchCity } from '../utils/geocode.js';
+import { getSavedRoutes, saveNamedRoute, deleteSavedRoute } from '../utils/storage.js';
 
 export function initSidebar() {
   const list = document.getElementById('waypoint-list');
@@ -109,6 +110,80 @@ export function initSidebar() {
   store.subscribe('cleared', render);
 
   render();
+
+  // --- Saved routes ---
+  initSavedRoutes();
+}
+
+function initSavedRoutes() {
+  const panel = document.getElementById('saved-routes-panel');
+  const btnSave = document.getElementById('btn-save-route');
+  const btnShow = document.getElementById('btn-show-saved');
+
+  function updateSaveBtn() {
+    btnSave.disabled = store.getWaypoints().length < 2;
+  }
+  store.subscribe('waypoint:added', updateSaveBtn);
+  store.subscribe('waypoint:removed', updateSaveBtn);
+  store.subscribe('cleared', updateSaveBtn);
+  updateSaveBtn();
+
+  btnSave.addEventListener('click', () => {
+    const name = prompt('Название маршрута:', defaultRouteName());
+    if (!name) return;
+    saveNamedRoute(name.trim(), store.getWaypoints(), store.getSegments());
+    renderPanel();
+    if (!panel.classList.contains('hidden')) return;
+    panel.classList.remove('hidden');
+  });
+
+  btnShow.addEventListener('click', () => {
+    panel.classList.toggle('hidden');
+    if (!panel.classList.contains('hidden')) renderPanel();
+  });
+
+  function defaultRouteName() {
+    const wps = store.getWaypoints();
+    if (wps.length >= 2) return `${wps[0].name} → ${wps[wps.length - 1].name}`;
+    return 'Маршрут';
+  }
+
+  function renderPanel() {
+    const routes = getSavedRoutes();
+    if (routes.length === 0) {
+      panel.innerHTML = '<div class="saved-empty">Нет сохранённых маршрутов</div>';
+      return;
+    }
+    panel.innerHTML = routes.map(r => `
+      <div class="saved-route-item" data-id="${r.id}">
+        <div class="saved-route-info">
+          <span class="saved-route-name">${r.name}</span>
+          <span class="saved-route-meta">${r.waypoints.length} точек · ${r.savedAt}</span>
+        </div>
+        <div class="saved-route-actions">
+          <button class="saved-btn saved-load" data-id="${r.id}" title="Загрузить">▶</button>
+          <button class="saved-btn saved-delete" data-id="${r.id}" title="Удалить">✕</button>
+        </div>
+      </div>
+    `).join('');
+
+    panel.querySelectorAll('.saved-load').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const route = getSavedRoutes().find(r => r.id === btn.dataset.id);
+        if (!route) return;
+        if (store.getWaypoints().length > 0 && !confirm(`Загрузить «${route.name}»? Текущий маршрут будет заменён.`)) return;
+        store.loadRoute(route);
+        panel.classList.add('hidden');
+      });
+    });
+
+    panel.querySelectorAll('.saved-delete').forEach(btn => {
+      btn.addEventListener('click', () => {
+        deleteSavedRoute(btn.dataset.id);
+        renderPanel();
+      });
+    });
+  }
 }
 
 function initSearch() {
